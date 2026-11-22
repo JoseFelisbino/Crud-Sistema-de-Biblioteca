@@ -59,3 +59,55 @@ class LivroService:
             if livro.idLivro == id_livro:
                 return livro
         return None
+
+    # ---------- Edição ----------
+
+    def editar(self, id_livro, titulo=None, autor=None, ano=None,
+               disponivel=None, emprestimos=None):
+        livro = self.buscar_por_id(id_livro)
+        if livro is None:
+            return None
+
+        # Campos com None mantêm o valor atual.
+        # Valida tudo antes de alterar, para o livro não ficar editado pela metade.
+        if titulo is None:
+            novo_titulo = livro.titulo
+        else:
+            novo_titulo = self._validar_texto(titulo, "título")
+
+        if autor is None:
+            novo_autor = livro.autor
+        else:
+            novo_autor = self._validar_texto(autor, "autor")
+
+        if ano is None:
+            novo_ano = livro.ano
+        else:
+            novo_ano = self._validar_ano(ano)
+
+        if disponivel is None:
+            novo_disponivel = livro.disponivel
+        else:
+            novo_disponivel = self._converter_disponivel(disponivel)
+
+        if (novo_disponivel != livro.disponivel
+                and self._possui_emprestimo_ativo(id_livro, emprestimos)):
+            raise ValueError(
+                "Este livro está emprestado. "
+                "Registre a devolução para alterar a disponibilidade."
+            )
+
+        livro.titulo = novo_titulo
+        livro.autor = novo_autor
+        livro.ano = novo_ano
+        livro.disponivel = novo_disponivel
+        return livro
+
+    def _possui_emprestimo_ativo(self, id_livro, emprestimos):
+        if not emprestimos:
+            return False
+        for emprestimo in emprestimos:
+            if (emprestimo.livro.idLivro == id_livro
+                    and emprestimo.data_devolucao is None):
+                return True
+        return False
