@@ -284,7 +284,17 @@ while opcao != 10:
             print("Usuário não encontrado.")
             continue
 
-        emprestimos = serviceEmprestimo.listar_por_usuario(id_usuario)
+                print("1 - Livros emprestados atualmente")
+                print("2 - Histórico completo")
+                consulta = input("Escolha uma consulta: ").strip()
+
+                if consulta == "1":
+                    emprestimos = serviceEmprestimo.listar_ativos_por_usuario(id_usuario)
+                elif consulta == "2":
+                    emprestimos = serviceEmprestimo.listar_por_usuario(id_usuario)
+                else:
+                    print("Consulta inválida.")
+                    continue
 
         if emprestimos:
             for emprestimo in emprestimos:
