@@ -111,3 +111,12 @@ class LivroService:
                     and emprestimo.data_devolucao is None):
                 return True
         return False
+
+    # ---------- Exclusão ----------
+
+    def deletar(self, id_livro):
+        livro = self.buscar_por_id(id_livro)
+        if livro is None:
+            return False
+        self.lista.remove(livro)
+        return True
