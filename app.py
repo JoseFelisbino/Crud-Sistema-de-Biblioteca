@@ -68,7 +68,11 @@ while opcao != 10:
         autor = input("Digite o autor: ")
         ano = input("Digite o ano: ")
         disponivel = input("Digite o disponivel (true/false): ")
-        serviceLivro.cadastrar(titulo, autor, ano, disponivel)
+        try:
+            serviceLivro.cadastrar(titulo, autor, ano, disponivel)
+        except ValueError as erro:
+            print(erro)
+            continue
 
         persistencia.salvar(
             serviceLivro,
@@ -105,8 +109,12 @@ while opcao != 10:
         if novo_disponivel == "":
             novo_disponivel = None
 
-        livro_editado = serviceLivro.editar( id_livro, novo_titulo, novo_autor,
-        novo_ano, novo_disponivel, serviceEmprestimo.listar())
+        try:
+            livro_editado = serviceLivro.editar(id_livro, novo_titulo, novo_autor,
+            novo_ano, novo_disponivel, serviceEmprestimo.listar())
+        except ValueError as erro:
+            print(erro)
+            continue
         
         if livro_editado:
 
@@ -284,17 +292,17 @@ while opcao != 10:
             print("Usuário não encontrado.")
             continue
 
-                print("1 - Livros emprestados atualmente")
-                print("2 - Histórico completo")
-                consulta = input("Escolha uma consulta: ").strip()
+        print("1 - Livros emprestados atualmente")
+        print("2 - Histórico completo")
+        consulta = input("Escolha uma consulta: ").strip()
 
-                if consulta == "1":
-                    emprestimos = serviceEmprestimo.listar_ativos_por_usuario(id_usuario)
-                elif consulta == "2":
-                    emprestimos = serviceEmprestimo.listar_por_usuario(id_usuario)
-                else:
-                    print("Consulta inválida.")
-                    continue
+        if consulta == "1":
+            emprestimos = serviceEmprestimo.listar_ativos_por_usuario(id_usuario)
+        elif consulta == "2":
+            emprestimos = serviceEmprestimo.listar_por_usuario(id_usuario)
+        else:
+            print("Consulta inválida.")
+            continue
 
         if emprestimos:
             for emprestimo in emprestimos:
@@ -308,4 +316,4 @@ while opcao != 10:
     else:
         print("Opção inválida! Tente novamente.")
 
-        print("Programa finalizado.")
+print("Programa finalizado.")
