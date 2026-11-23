@@ -1,5 +1,25 @@
 from datetime import date
 
+from entity.Emprestimo import Emprestimo
+
+
+class EmprestimoService:
+    def __init__(self):
+        self.lista = []
+
+    def realizar_emprestimo(self, livro, usuario):
+        if not livro.disponivel:
+            return None, "Livro indisponível! Não é possível realizar o empréstimo."
+
+        novo_emprestimo = Emprestimo(livro, usuario)
+        livro.disponivel = False
+        self.lista.append(novo_emprestimo)
+
+        return novo_emprestimo, "Empréstimo realizado com sucesso!"
+
+    def listar(self):
+        return self.lista
+
     def listar_ativos(self):
         return [
             emprestimo for emprestimo in self.listar()
